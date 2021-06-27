@@ -219,8 +219,8 @@ function isCreditCard(text: string) {
 }
 
 function isPhoneNumber(text: string) {
-  let regexp = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-  return regexp.test(text);
+  let regexp = /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$/g;
+  return regexp.test(text) && text.length === 12;
 }
 
 const Form: React.FC = () => {
@@ -233,6 +233,23 @@ const Form: React.FC = () => {
   const [creditCard, setCreditCard] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [doctorIndex, setDoctorIndex] = useState(0);
+  const [serviceIndex, setServiceIndex] = useState(0);
+  const [date, setDate] = useState<Date | undefined>(undefined);
+
+  const submit = (e: any) => {
+    e.preventDefault();
+    if (!isCreditCard(creditCard)) {
+      alert("Please enter a valid credit card");
+    } else if (!isPhoneNumber(phoneNumber)) {
+      alert("Please enter a valid phone number");
+    } else if (!date) {
+      alert("Please choose a date");
+    } else {
+      alert(
+        `Successfully booked an appointment for ${services[serviceIndex].name} with ${doctors[doctorIndex].name} on ${date}`
+      );
+    }
+  };
 
   return (
     <div className="mb-5">
@@ -287,9 +304,14 @@ const Form: React.FC = () => {
 
           <div className="mb-2 col-6">
             <label className="form-label mb-0">Service</label>
-            <select className="form-select">
+            <select
+              className="form-select"
+              onChange={(e) => setServiceIndex(parseInt(e.target.value))}
+            >
               {services.map(({ name }, i) => (
-                <option key={i}>{name}</option>
+                <option key={i} value={i}>
+                  {name}
+                </option>
               ))}
             </select>
           </div>
@@ -298,7 +320,8 @@ const Form: React.FC = () => {
             <Tippy
               content={
                 <Tooltip>
-                  You can choose a doctor. However, not all doctors are available on the same days
+                  You can choose a doctor. However, not all doctors are
+                  available on the same days
                 </Tooltip>
               }
             >
@@ -323,6 +346,7 @@ const Form: React.FC = () => {
                 component={(props: any) => (
                   <input {...props} className="form-control" />
                 )}
+                onDayChange={(day) => setDate(day)}
                 classNames={{
                   container: "w-full",
                   overlay: "DayPickerInput-Overlay",
@@ -394,7 +418,10 @@ const Form: React.FC = () => {
             <input type="email" className="form-control" />
           </div>
           <div className="col-12">
-            <button type="submit" className="btn btn-primary w-100 mt-3">
+            <button
+              className="btn btn-primary w-100 mt-3"
+              onClick={(e) => submit(e)}
+            >
               Submit
             </button>
           </div>
