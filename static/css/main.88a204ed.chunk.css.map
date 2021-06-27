@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/css/custom.css"],"names":[],"mappings":"AAIA,iCACE,+BACF","file":"main.88a204ed.chunk.css","sourcesContent":[".form-control:hover {\r\n  box-shadow: 0 0.1rem 1rem #add8e6;\r\n}\r\n\r\nselect:hover {\r\n  box-shadow: 0 0.1rem 1rem #add8e6;\r\n}\r\n"]}
